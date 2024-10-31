@@ -21,7 +21,8 @@ RUN npm run build
 
 # Create a directory for Tor hidden services
 RUN mkdir -p /var/lib/tor/hidden_service && \
-    chown -R debian-tor:debian-tor /var/lib/tor/hidden_service
+    chown -R debian-tor:debian-tor /var/lib/tor/hidden_service && \
+    chmod 700 /var/lib/tor/hidden_service
 
 # Configure Tor to map the hidden service to the Vite port
 RUN echo "HiddenServiceDir /var/lib/tor/hidden_service/\nHiddenServicePort 80 127.0.0.1:5173" >> /etc/tor/torrc
