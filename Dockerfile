@@ -1,4 +1,4 @@
-FROM node:14
+FROM node:16
 
 # Install Tor
 RUN apt-get update && apt-get install -y tor
@@ -26,4 +26,4 @@ COPY entrypoint.sh /usr/local/bin/
 RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # Start the entrypoint script
-CMD ["entrypoint.sh"]
+CMD ["sh", "/usr/local/bin/entrypoint.sh"]
