@@ -8,24 +8,24 @@ RUN apt-get update && apt-get install -y tor
 WORKDIR /app
 
 # Copy package.json and package-lock.json
-COPY package*.json ./
+COPY package*.json ./ 
 
 # Install dependencies
-RUN npm install
+RUN npm install 
 
 # Copy the rest of the application code
-COPY . .
+COPY . . 
 
 # Build the Vite project
-RUN npm run build
+RUN npm run build 
 
 # Create a directory for Tor hidden services
 RUN mkdir -p /var/lib/tor/hidden_service && \
     chown -R debian-tor:debian-tor /var/lib/tor/hidden_service && \
-    chmod 700 /var/lib/tor/hidden_service
+    chmod 700 /var/lib/tor/hidden_service 
 
 # Configure Tor to map the hidden service to the Vite port
-RUN echo "HiddenServiceDir /var/lib/tor/hidden_service/\nHiddenServicePort 80 127.0.0.1:5173" >> /etc/tor/torrc
+RUN echo "HiddenServiceDir /var/lib/tor/hidden_service/\nHiddenServicePort 80 127.0.0.1:5173" >> /etc/tor/torrc 
 
 # Add a script to log the onion URL
 RUN echo '#!/bin/bash\n\
@@ -38,5 +38,5 @@ ONION_URL=$(cat /var/lib/tor/hidden_service/hostname)\n\
 # Log the URL\n\
 echo "Onion URL: $ONION_URL"\n' > /get_onion_url.sh && chmod +x /get_onion_url.sh
 
-# Start Tor and the Vite preview server
-CMD ["sh", "-c", "service tor start && npm run preview -- --host 0.0.0.0 --port 5173 & /get_onion_url.sh"]
+# Start Tor and the Vite preview server in the foreground
+CMD ["sh", "-c", "tor & npm run preview -- --host 0.0.0.0 --port 5173 && /get_onion_url.sh"]
