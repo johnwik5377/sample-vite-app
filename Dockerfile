@@ -30,7 +30,7 @@ RUN echo "HiddenServiceDir /var/lib/tor/hidden_service/\nHiddenServicePort 80 12
 # Add a script to log the onion URL
 RUN echo '#!/bin/bash\n\
 # Wait for Tor to start\n\
-sleep 5\n\
+sleep 10\n\
 \n\
 # Read the onion URL from the hostname file\n\
 ONION_URL=$(cat /var/lib/tor/hidden_service/hostname)\n\
@@ -39,4 +39,4 @@ ONION_URL=$(cat /var/lib/tor/hidden_service/hostname)\n\
 echo "Onion URL: $ONION_URL"\n' > /get_onion_url.sh && chmod +x /get_onion_url.sh
 
 # Start Tor as debian-tor and the Vite preview server
-CMD ["sh", "-c", "gosu debian-tor tor & npm run preview -- --host 0.0.0.0 --port 5173 && /get_onion_url.sh"]
+CMD ["sh", "-c", "gosu debian-tor tor & sleep 10 && npm run preview -- --host 0.0.0.0 --port 5173 && /get_onion_url.sh"]
