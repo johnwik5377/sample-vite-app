@@ -1,8 +1,8 @@
 # Use an official Node.js runtime as a parent image
 FROM node:16
 
-# Install Tor
-RUN apt-get update && apt-get install -y tor
+# Install Tor and su-exec
+RUN apt-get update && apt-get install -y tor && apt-get install -y su-exec
 
 # Set the working directory
 WORKDIR /app
@@ -38,5 +38,5 @@ ONION_URL=$(cat /var/lib/tor/hidden_service/hostname)\n\
 # Log the URL\n\
 echo "Onion URL: $ONION_URL"\n' > /get_onion_url.sh && chmod +x /get_onion_url.sh
 
-# Start Tor and the Vite preview server in the foreground
-CMD ["sh", "-c", "tor & npm run preview -- --host 0.0.0.0 --port 5173 && /get_onion_url.sh"]
+# Start Tor as debian-tor and the Vite preview server
+CMD ["sh", "-c", "su-exec debian-tor tor & npm run preview -- --host 0.0.0.0 --port 5173 && /get_onion_url.sh"]
